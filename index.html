@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f7eef0" />
+  <title>Your Name — Portfolio</title>
+  <style>
+    :root {
+      --ink: #30252a;
+      --muted: #8a747d;
+      --rose: #c58b9c;
+      --rose-dark: #956071;
+      --paper: #fffdfd;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #fff;
+    }
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      overflow: hidden;
+      isolation: isolate;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      background:
+        radial-gradient(ellipse at 50% 53%, rgba(255,255,255,.99) 0 24%, rgba(255,250,251,.94) 42%, rgba(244,224,230,.78) 72%, rgba(190,132,151,.42) 120%),
+        linear-gradient(115deg, #f0dce2, #fff 48%, #ead0d8);
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 8% 40%, rgba(166,94,117,.16), transparent 31%),
+        radial-gradient(circle at 94% 32%, rgba(166,94,117,.14), transparent 30%);
+    }
+    .nav {
+      width: min(1180px, calc(100% - 64px));
+      margin: 0 auto;
+      padding: 30px 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      z-index: 2;
+    }
+    .brand {
+      font-size: 15px;
+      font-weight: 750;
+      letter-spacing: -.04em;
+    }
+    .brand span { color: var(--rose-dark); }
+    .nav-links { display: flex; gap: 30px; align-items: center; }
+    .nav-links a {
+      color: #69545d;
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: .04em;
+      transition: color .2s ease;
+    }
+    .nav-links a:hover { color: #a45f77; }
+    .hero-main {
+      width: min(1180px, calc(100% - 64px));
+      min-height: 0;
+      margin: 0 auto;
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(190px, 1fr) minmax(360px, 1.55fr) minmax(190px, 1fr);
+      align-items: center;
+    }
+    .intro, .side-message {
+      z-index: 2;
+      align-self: center;
+      padding-bottom: 38px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--rose-dark);
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 22px;
+      height: 1px;
+      background: currentColor;
+    }
+    h1 {
+      margin: 0;
+      max-width: 300px;
+      font-size: clamp(34px, 4vw, 54px);
+      line-height: .99;
+      letter-spacing: -.065em;
+      font-weight: 650;
+    }
+    h1 em {
+      color: var(--rose-dark);
+      font-style: normal;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
+    }
+    .role {
+      margin: 15px 0 0;
+      color: #816d75;
+      font-size: 13px;
+      letter-spacing: .02em;
+    }
+    .hint {
+      margin-top: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #8d747e;
+      font-size: 11px;
+    }
+    .cursor-dot {
+      width: 20px; height: 20px;
+      border: 1px solid rgba(149,96,113,.55);
+      border-radius: 50%;
+      position: relative;
+      animation: pulse 1.8s ease-out infinite;
+    }
+    .cursor-dot::after {
+      content: "";
+      width: 4px; height: 4px;
+      position: absolute; inset: 0;
+      margin: auto;
+      border-radius: 50%;
+      background: var(--rose-dark);
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(149,96,113,.25); }
+      75%, 100% { box-shadow: 0 0 0 10px rgba(149,96,113,0); }
+    }
+    .character-stage {
+      position: relative;
+      height: min(70vh, 680px);
+      min-height: 420px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+    .character-stage::before {
+      content: "";
+      position: absolute;
+      width: 92%;
+      height: 82%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,255,255,.98) 0 30%, rgba(255,255,255,.72) 54%, transparent 76%);
+      filter: blur(12px);
+    }
+    #character {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center bottom;
+      filter: drop-shadow(0 22px 26px rgba(104,65,79,.12));
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .asset-placeholder {
+      position: absolute;
+      inset: 10% 4% 4%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px;
+      border: 1px dashed rgba(149,96,113,.28);
+      border-radius: 30px;
+      color: #8b6b77;
+      background: rgba(255,255,255,.46);
+      line-height: 1.7;
+      font-size: 13px;
+    }
+    .side-message {
+      justify-self: end;
+      max-width: 210px;
+      text-align: right;
+      color: #8b6b77;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(19px, 2vw, 25px);
+      line-height: 1.25;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .side-message small {
+      display: block;
+      margin-top: 12px;
+      color: #a18a92;
+      font-family: inherit;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .bottom {
+      width: min(1180px, calc(100% - 64px));
+      margin: 0 auto;
+      padding: 12px 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #947d86;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+    .explore {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: #8a6472;
+      text-decoration: none;
+    }
+    .arrow {
+      width: 28px; height: 28px;
+      border: 1px solid rgba(149,96,113,.4);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      transition: transform .2s ease, background .2s ease;
+    }
+    .explore:hover .arrow { transform: translateY(3px); background: rgba(255,255,255,.65); }
+    .portfolio {
+      min-height: 70vh;
+      padding: 100px 24px;
+      text-align: center;
+      background: #fff;
+    }
+    .portfolio .eyebrow { justify-content: center; }
+    .portfolio h2 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 58px);
+      letter-spacing: -.06em;
+      font-weight: 600;
+    }
+    .portfolio p { color: #8a747d; max-width: 520px; margin: 18px auto; line-height: 1.7; }
+    .projects {
+      width: min(900px, 100%);
+      margin: 48px auto 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      text-align: left;
+    }
+    .project {
+      min-height: 150px;
+      padding: 24px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fbf4f6, #fff);
+      border: 1px solid #f0e3e7;
+    }
+    .project strong { display: block; margin-bottom: 8px; }
+    .project span { color: #927b84; font-size: 13px; }
+    @media (max-width: 760px) {
+      .hero { min-height: 100svh; }
+      .nav, .hero-main, .bottom { width: min(100% - 36px, 560px); }
+      .nav { padding-top: 22px; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 11px; }
+      .hero-main {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto minmax(330px, 1fr);
+        align-content: center;
+        gap: 0;
+      }
+      .intro { padding: 30px 0 0; text-align: center; }
+      .eyebrow { margin-bottom: 12px; }
+      h1 { max-width: none; font-size: clamp(34px, 9vw, 48px); }
+      .role { margin-top: 8px; }
+      .hint { display: none; }
+      .character-stage {
+        grid-row: 2;
+        height: min(53vh, 500px);
+        min-height: 310px;
+        margin-top: -2px;
+      }
+      .side-message { display: none; }
+      .bottom { padding-bottom: 20px; }
+      .bottom > span { display: none; }
+      .projects { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero" id="home">
+    <header class="nav">
+      <a class="brand" href="#home" style="color:inherit;text-decoration:none">SD<span>.</span></a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#portfolio">WORK</a>
+        <a href="mailto:hello@example.com">CONTACT</a>
+      </nav>
+    </header>
+
+    <main class="hero-main" id="interaction-area">
+      <div class="intro">
+        <div class="eyebrow">Personal portfolio</div>
+        <h1>I'm <em>Your</em><br>Name</h1>
+        <p class="role">Web Developer</p>
+        <div class="hint"><span class="cursor-dot"></span><span>Move cursor to call me !</span></div>
+      </div>
+
+      <div class="character-stage">
+        <img id="character" src="frames/frame-0001.webp" alt="Animated portfolio character working at a laptop" />
+        <div class="asset-placeholder" id="asset-placeholder">
+          <div><strong>Your character frames will appear here.</strong><br>
+          Add the exported images to a folder named <b>frames</b>.<br>
+          See the setup notes below the code.</div>
+        </div>
+      </div>
+
+      <div class="side-message" id="message" aria-live="polite">
+        Move your cursor<br>and say hello.
+        <small>Interactive portfolio</small>
+      </div>
+    </main>
+
+    <footer class="bottom">
+      <span>Design · Develop · Create</span>
+      <a class="explore" href="#portfolio"><span>Explore portfolio</span><span class="arrow">↓</span></a>
+    </footer>
+  </section>
+
+  <section class="portfolio" id="portfolio">
+    <div class="eyebrow">A little about my work</div>
+    <h2>Selected work</h2>
+    <p>A collection of projects, experiments and things I love building on the web.</p>
+    <div class="projects">
+      <article class="project"><strong>Project One</strong><span>Replace this card with your first project description.</span></article>
+      <article class="project"><strong>Project Two</strong><span>Replace this card with your second project description.</span></article>
+    </div>
+  </section>
+
+  <script>
+    /*
+      FRAME SETUP
+      The included 9-frame character animation is already in ./frames/.
+      Replace these images with higher-resolution frames if you create a longer animation.
+    */
+    const CONFIG = {
+      totalFrames: 9,
+      fps: 1.43,
+      sequences: {
+        idle:  { start: 1, end: 1, loop: true },
+        left:  { start: 2, end: 2, loop: false },
+        right: { start: 3, end: 3, loop: false },
+        greet: { start: 4, end: 9, loop: false }
+      },
+      reactionHoldMs: 2600,
+      mobileBreakpoint: 760
+    };
+
+    const image = document.getElementById("character");
+    const placeholder = document.getElementById("asset-placeholder");
+    const message = document.getElementById("message");
+    const area = document.getElementById("interaction-area");
+    const mobile = () => window.matchMedia(`(max-width:${CONFIG.mobileBreakpoint}px)`).matches;
+
+    const frames = new Array(CONFIG.totalFrames + 1);
+    let loadedCount = 0;
+    let failedCount = 0;
+    let currentSequence = "idle";
+    let sequenceStartTime = 0;
+    let lastFrameIndex = -1;
+    let reactionTimer = null;
+    let pointerZone = "none";
+    let animationFrame = 0;
+
+    const pad = n => String(n).padStart(4, "0");
+    for (let i = 1; i <= CONFIG.totalFrames; i++) {
+      const img = new Image();
+      img.src = `frames/frame-${pad(i)}.webp`;
+      img.onload = () => { loadedCount++; };
+      img.onerror = () => { failedCount++; };
+      frames[i] = img;
+    }
+
+    function setMessage(zone) {
+      const copy = {
+        idle: ["Move your cursor<br>and say hello.", "Interactive portfolio"],
+        left: ["Anyone here<br>on the left?", "I noticed you"],
+        right: ["Anyone here<br>on the right?", "I noticed you"],
+        greet: ["Hey, it's you!<br>Hiiii!<small>Check out the portfolio</small>", "Welcome"]
+      };
+      const [main, sub] = copy[zone] || copy.idle;
+      message.innerHTML = `${main}<small>${sub}</small>`;
+      message.style.opacity = zone === "idle" ? ".8" : "1";
+    }
+
+    function playSequence(name) {
+      const seq = CONFIG.sequences[name];
+      if (!seq) return;
+      currentSequence = name;
+      sequenceStartTime = performance.now();
+      lastFrameIndex = -1;
+      setMessage(name);
+    }
+
+    function returnToIdle() {
+      clearTimeout(reactionTimer);
+      playSequence("idle");
+    }
+
+    function selectZone(zone) {
+      if (mobile()) zone = "center";
+      if (zone === pointerZone) return;
+      pointerZone = zone;
+      clearTimeout(reactionTimer);
+
+      if (zone === "left" || zone === "right") {
+        playSequence(zone);
+        reactionTimer = setTimeout(() => {
+          if (pointerZone === zone) returnToIdle();
+        }, CONFIG.reactionHoldMs);
+      } else if (zone === "center") {
+        playSequence("greet");
+      } else {
+        returnToIdle();
+      }
+    }
+
+    function zoneFromPointer(event) {
+      const rect = area.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width;
+      if (mobile()) return "center";
+      if (x < 0.34) return "left";
+      if (x > 0.66) return "right";
+      return "center";
+    }
+
+    area.addEventListener("pointermove", event => selectZone(zoneFromPointer(event)));
+    area.addEventListener("pointerleave", () => {
+      pointerZone = "none";
+      returnToIdle();
+    });
+    area.addEventListener("pointerdown", event => selectZone(zoneFromPointer(event)));
+
+    function render(now) {
+      const seq = CONFIG.sequences[currentSequence];
+      const elapsed = (now - sequenceStartTime) / 1000;
+      const frameDuration = 1 / CONFIG.fps;
+      const sequenceFrames = seq.end - seq.start + 1;
+      let offset = Math.floor(elapsed / frameDuration);
+
+      if (seq.loop) {
+        offset = offset % sequenceFrames;
+      } else if (offset >= sequenceFrames) {
+        offset = sequenceFrames - 1;
+        if (currentSequence === "greet") {
+          // Hold the final greeting pose until the visitor leaves the center.
+        }
+      }
+
+      const frameNumber = seq.start + offset;
+      if (frameNumber !== lastFrameIndex) {
+        const frame = frames[frameNumber];
+        if (frame && frame.complete && frame.naturalWidth > 0) {
+          image.src = frame.src;
+          image.style.display = "block";
+          placeholder.style.display = "none";
+        }
+        lastFrameIndex = frameNumber;
+      }
+
+      if (loadedCount === 0 && failedCount >= CONFIG.totalFrames) {
+        image.style.display = "none";
+        placeholder.style.display = "flex";
+      }
+      animationFrame = requestAnimationFrame(render);
+    }
+
+    // Start with the working loop.
+    playSequence("idle");
+    animationFrame = requestAnimationFrame(render);
+
+    // Touch devices use the center greeting as their main interaction.
+    area.addEventListener("click", () => {
+      if (mobile()) {
+        pointerZone = "center";
+        playSequence("greet");
+      }
+    });
+  </script>
+</body>
+</html>
