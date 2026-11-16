@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#f7eef0" />
-  <title>Your Name — Portfolio</title>
+  <title>ABUL HASSAN — Portfolio</title>
   <style>
     :root {
       --ink: #30252a;
@@ -303,7 +303,7 @@
 <body>
   <section class="hero" id="home">
     <header class="nav">
-      <a class="brand" href="#home" style="color:inherit;text-decoration:none">SD<span>.</span></a>
+      <a class="brand" href="#home" style="color:inherit;text-decoration:none">AH<span>.</span></a>
       <nav class="nav-links" aria-label="Main navigation">
         <a href="#portfolio">WORK</a>
         <a href="mailto:hello@example.com">CONTACT</a>
@@ -313,7 +313,7 @@
     <main class="hero-main" id="interaction-area">
       <div class="intro">
         <div class="eyebrow">Personal portfolio</div>
-        <h1>I'm <em>Your</em><br>Name</h1>
+        <h1>I'm <em>ABUL</em><br>HASSAN</h1>
         <p class="role">Web Developer</p>
         <div class="hint"><span class="cursor-dot"></span><span>Move cursor to call me !</span></div>
       </div>
@@ -350,13 +350,9 @@
   </section>
 
   <script>
-    /*
-      OPTIMIZED FRAME SETUP
-      Using all 16 frames from the frames folder with smooth FPS control.
-    */
     const CONFIG = {
       totalFrames: 16,
-      fps: 12, // Smooth animation frame rate
+      fps: 12,
       sequences: {
         idle:  { start: 1, end: 8, loop: true },
         greet: { start: 9, end: 16, loop: false }
@@ -375,18 +371,30 @@
     let loadedCount = 0;
     let failedCount = 0;
     let currentSequence = "idle";
-    let sequenceStartTime = performance.now();
+    let sequenceStartTime = 0;
     let lastFrameIndex = -1;
     let reactionTimer = null;
     let pointerZone = "none";
     let animationFrame = 0;
+    let isLoaded = false;
 
     const pad = n => String(n).padStart(4, "0");
+
+    // Preload all 16 frames first so they play together smoothly like a video
     for (let i = 1; i <= CONFIG.totalFrames; i++) {
       const img = new Image();
       img.src = `frames/frame-${pad(i)}.webp`;
-      img.onload = () => { loadedCount++; };
-      img.onerror = () => { failedCount++; };
+      img.onload = () => { 
+        loadedCount++; 
+        if (loadedCount === CONFIG.totalFrames && !isLoaded) {
+          isLoaded = true;
+          playSequence("idle");
+          animationFrame = requestAnimationFrame(render);
+        }
+      };
+      img.onerror = () => { 
+        failedCount++; 
+      };
       frames[i] = img;
     }
 
@@ -471,18 +479,13 @@
         lastFrameIndex = frameNumber;
       }
 
-      if (loadedCount === 0 && failedCount >= CONFIG.totalFrames) {
+      if (failedCount >= CONFIG.totalFrames) {
         image.style.display = "none";
         placeholder.style.display = "flex";
       }
       animationFrame = requestAnimationFrame(render);
     }
 
-    // Start with the working loop.
-    playSequence("idle");
-    animationFrame = requestAnimationFrame(render);
-
-    // Touch devices use the center greeting as their main interaction.
     area.addEventListener("click", () => {
       if (mobile()) {
         pointerZone = "center";
