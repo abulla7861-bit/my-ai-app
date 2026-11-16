@@ -351,18 +351,15 @@
 
   <script>
     /*
-      FRAME SETUP
-      The included 9-frame character animation is already in ./frames/.
-      Replace these images with higher-resolution frames if you create a longer animation.
+      OPTIMIZED FRAME SETUP
+      Using all 16 frames from the frames folder with smooth FPS control.
     */
     const CONFIG = {
-      totalFrames: 9,
-      fps: 1.43,
+      totalFrames: 16,
+      fps: 12, // Smooth animation frame rate
       sequences: {
-        idle:  { start: 1, end: 1, loop: true },
-        left:  { start: 2, end: 2, loop: false },
-        right: { start: 3, end: 3, loop: false },
-        greet: { start: 4, end: 9, loop: false }
+        idle:  { start: 1, end: 8, loop: true },
+        greet: { start: 9, end: 16, loop: false }
       },
       reactionHoldMs: 2600,
       mobileBreakpoint: 760
@@ -378,7 +375,7 @@
     let loadedCount = 0;
     let failedCount = 0;
     let currentSequence = "idle";
-    let sequenceStartTime = 0;
+    let sequenceStartTime = performance.now();
     let lastFrameIndex = -1;
     let reactionTimer = null;
     let pointerZone = "none";
@@ -396,8 +393,6 @@
     function setMessage(zone) {
       const copy = {
         idle: ["Move your cursor<br>and say hello.", "Interactive portfolio"],
-        left: ["Anyone here<br>on the left?", "I noticed you"],
-        right: ["Anyone here<br>on the right?", "I noticed you"],
         greet: ["Hey, it's you!<br>Hiiii!<small>Check out the portfolio</small>", "Welcome"]
       };
       const [main, sub] = copy[zone] || copy.idle;
@@ -406,6 +401,7 @@
     }
 
     function playSequence(name) {
+      if (currentSequence === name && name === "greet") return;
       const seq = CONFIG.sequences[name];
       if (!seq) return;
       currentSequence = name;
@@ -425,13 +421,11 @@
       pointerZone = zone;
       clearTimeout(reactionTimer);
 
-      if (zone === "left" || zone === "right") {
-        playSequence(zone);
+      if (zone === "center" || zone === "left" || zone === "right") {
+        playSequence("greet");
         reactionTimer = setTimeout(() => {
           if (pointerZone === zone) returnToIdle();
         }, CONFIG.reactionHoldMs);
-      } else if (zone === "center") {
-        playSequence("greet");
       } else {
         returnToIdle();
       }
@@ -464,9 +458,6 @@
         offset = offset % sequenceFrames;
       } else if (offset >= sequenceFrames) {
         offset = sequenceFrames - 1;
-        if (currentSequence === "greet") {
-          // Hold the final greeting pose until the visitor leaves the center.
-        }
       }
 
       const frameNumber = seq.start + offset;
